@@ -1,0 +1,90 @@
+import React,{useEffect, useState} from 'react';
+import {ethers} from 'ethers';
+
+import { contractABI,contractAddress } from '../utils/constants';
+console.log(contractABI,contractAddress);
+
+export const LandRegistrationContext= React.createContext();
+
+const {ethereum} = window;
+
+const getEthereumContract=()=>{
+    const provider= new ethers.provider.Web3Provider(ethereum);
+    const signer= provider.getSigner();
+
+    const landRegistrationContract= new ethers.Contract(contractAddress,contractABI,signer);
+    console.log({
+        provider,signer,landRegistrationContract
+    });
+}
+
+export const LandRegistrationProvider=({children})=>{
+    const [currentAccount,setCurrentAccount]=useState("");
+    const [formData, setFormData]= useState({
+        addressOf:'', land_id:'',message:''
+    });
+
+    const checkIfWalletIsConnected =async()=>{
+        try {
+            if(!ethereum) return alert("Please enter metamask");
+
+            const accounts= await ethereum.request({method:'eth_accounts'});
+            console.log(currentAccount)
+    
+            if (accounts.length){
+                setCurrentAccount(accounts[0]);
+                getEthereumContract();
+    
+                // get all Transactions
+            }
+            else{
+                console.log("no accounts found");
+            }
+            // console.log(accounts);
+        } catch (error) {
+            // no ethereum object
+            console.log(error);
+            throw new Error("No ethereum object.");      
+        }
+       
+    }
+
+    const connectWallet= async()=>{
+        try{
+            if(!ethereum) return alert("Please enter metamask");
+
+            const accounts= await ethereum.request({method:'eth_requestAccounts'});
+            // console.log(accounts);
+            setCurrentAccount(accounts[0]);
+        }
+        catch(error){
+            console.log(error);
+            throw new Error("No ethereum object")
+
+        }
+    }
+
+    const sendTransaction= async()=>{
+        try {
+
+
+            
+        } catch (error) {
+            console.log(error);
+            throw new Error("No ethereum object")
+            
+        }
+    }
+
+    useEffect(()=>{
+        checkIfWalletIsConnected();
+    },[]);
+
+
+    return(
+        <LandRegistrationContext.Provider value={{connectWallet,currentAccount}}>
+            {children}
+        </LandRegistrationContext.Provider>
+    )
+
+};

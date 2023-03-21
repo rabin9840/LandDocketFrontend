@@ -1,0 +1,114 @@
+import React,{useEffect, useState} from 'react';
+import {ethers} from 'ethers';
+
+import { contractABI,contractAddress } from '../utils/constants';
+
+export const LandRegistrationContext= React.createContext();
+
+const {ethereum} = window;
+
+const getEthereumContract = () => {
+  const provider = new ethers.providers.Web3Provider(ethereum);
+  const signer = provider.getSigner();
+  const landRegistrationContract = new ethers.Contract(contractAddress, contractABI, signer);
+  console.log({
+            provider,signer,landRegistrationContract
+        });
+  return landRegistrationContract;
+};
+
+// const getEthereumContract=()=>{
+//     console.log("get ethereum contract called")
+//     const provider= new ethers.provider.Web3Provider(ethereum);
+//     const signer= provider.getSigner();
+
+//     const landRegistrationContract= new ethers.Contract(contractAddress,contractABI,signer);
+//     console.log({
+//         provider,signer,landRegistrationContract
+//     });
+    
+// }
+
+export const LandRegistrationProvider=({children})=>{
+    const [currentAccount,setCurrentAccount]=useState("");
+    const [formData, setFormData]= useState({
+        uname:"", phone:"",location:""
+    });
+
+
+
+    // const handleChange = (input) => (e) => {
+    //     setFormData((prev) => ({
+    //       ...prev,
+    //       [input]: e.target.value,
+    //     }));
+    //   };
+
+
+
+    const handleChange = (e, name) => {
+      console.log("handle change called");
+          setFormData((prevState) => ({
+          ...prevState,
+          [name]: e.target.value,
+        }));
+    }
+
+      
+    
+
+      const checkIfWalletIsConnected = async () => {
+        try {
+          if (!ethereum) return alert("Please install Metamask to continue");
+          const accounts = await ethereum.request({ method: "eth_accounts" });
+          if (accounts.length) {
+            const account = accounts[0];
+            setCurrentAccount(account);
+
+          } else {
+            console.log("No authorized account found");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    
+
+      const connectWallet = async () => {
+        try {
+          if (!ethereum) return alert("Please install Metamask to continue");
+          const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+          }); //get all accounts
+          setCurrentAccount(accounts[0]); //set the 1st account as default account
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+    const sendTransaction= async()=>{
+        try {
+          if (!ethereum) return alert("Please install Metamask to continue");
+          // get data from the form
+          const {uname,phone,address}=formData;
+          getEthereumContract();
+            
+        } catch (error) {
+            console.log(error);
+            // throw new Error("No ethereum object")
+            
+        }
+    }
+
+    useEffect(()=>{
+        checkIfWalletIsConnected();
+    },[]);
+
+
+    return(
+        <LandRegistrationContext.Provider value={{connectWallet,currentAccount,formData,setFormData,handleChange,sendTransaction}}>
+            {children}
+        </LandRegistrationContext.Provider>
+    )
+
+};

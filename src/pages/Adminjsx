@@ -1,0 +1,94 @@
+import { useState, useEffect } from 'react';
+import { LandRegistrationContext } from '../context/LandRegistrationContext'; 
+import React, {useContext} from "react";
+import { ethers } from "ethers";
+
+import { contractABI, contractAddress } from "../utils/constants";
+const { ethereum } = window;
+const provider = new ethers.providers.Web3Provider(ethereum);
+const signer = provider.getSigner();
+const landRegistrationContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+
+export default function Admin(){
+    const {userDetails,getUserInfo,userData,setUserDetails,setUserData,viewUserInfo}=  useContext(LandRegistrationContext);
+    const [userObtainedAddress,setUserAddress]=useState(['0x70997970C51812dc3A010C7d01b50e0d17dc79C8']);
+
+
+    if (!ethereum) return alert("Please install Metamask to continue");
+    landRegistrationContract.on('Registration',async (userAddress)=>{
+        console.log("INSIDE EVENT"+userAddress);
+        setUserAddress(userObtainedAddress=>[...userObtainedAddress,userAddress]);
+        console.log(userObtainedAddress);
+
+        const userInformation= await landRegistrationContract.getUserDetails(userAddress);
+        console.log("All information from event received");
+        console.log("after recovering user information from events:"+userInformation);
+        console.log(userInformation.length);
+
+
+        // userObtainedAddress.map(async (address)=>{
+        //     const userInformation= await landRegistrationContract.getUserDetails(address);
+        //     console.log(userInformation);
+
+        // })
+        // setUserData((userData) => ({
+        //     ...userData,
+        //     name: userInformation[0],
+        //     age:userInformation[1],
+        //     city:userInformation[2],
+        //     citizenShipNumber:userInformation[3],
+        //     email:userInformation[4],
+        //     document:userInformation[5],
+        //   }));
+        setUserData(() => ({
+            
+            name: userInformation[0],
+            age:userInformation[1],
+            city:userInformation[2],
+            citizenShipNumber:userInformation[3],
+            email:userInformation[4],
+            document:userInformation[5],
+          }));
+        // setUserDetails(
+        //     "Name: " + userInformation[0] + "\n" +
+        //     "Age: " + userInformation[1] + "\n" +
+        //     "City: " + userInformation[2] + "\n" +
+        //     "Citizenship: " + userInformation[3]+'\n'+
+        //     "email: " + userInformation[4] + "\n" 
+        //   )
+          })
+
+    return(
+        <>
+        <h1>Welcome Admin</h1>
+        <h1>Display the available user to verify</h1>
+        {/* <h1>User name:{userName}</h1>
+        <h1>User age:{age}</h1>
+        <h1>User City:{city}</h1>
+        <h1>User citizenship:{citizenship}</h1>
+        <h1>User email:{email}</h1> */}
+        {/* {userDetails} */}
+        <h1>name:{userData.name}</h1>
+        <h1>city:{userData.city}</h1>
+        <h1>citizenShipNumber:{userData.citizenShipNumber}</h1>
+        <h1>Email:{userData.email}</h1>
+
+        <h1>userobtained address {userObtainedAddress[0]}</h1>
+        <h1>userobtained address {userObtainedAddress[1]}</h1>
+        <h1>userobtained address {userObtainedAddress[0]}</h1>
+
+        <p>{userObtainedAddress.map( (address)=>{
+            <h1>userobtained address {address.address}</h1>
+        
+            
+
+        })}</p>
+
+
+
+        </>
+
+    );
+
+}
