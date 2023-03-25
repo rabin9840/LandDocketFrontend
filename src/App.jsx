@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-import { LandRegistrationContext } from './context/LandRegistrationContext'; 
-import React, {useContext} from "react";
+import {useEffect } from 'react';
 import{Routes, Link,Route} from 'react-router-dom';
 import Admin from './pages/Admin';
 import User from './pages/Users';
@@ -32,16 +30,6 @@ function App() {
   const signer = provider.getSigner();  
   const landRegistrationContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-
-   const {connectWallet, currentAccount, checkAdmin,addUserTo,formData,userData,handleChange,handleUserChange,getUserInfo,checkUserVerification,checkUser,verifyTheUser,handleVerify,addLandTo,getAllLands,verifyUserLand,checkLand,viewUserInfo,checkPayment}=  useContext(LandRegistrationContext);
-   
-   const [landId,setlandId]=useState(0);
-   const [buttonClicked, setButtonClicked] = useState(false);
-
-
-   //for displaying user request
-   const [data, setData] = useState(null);
-
 useEffect(() => {
 
   landRegistrationContract.on('Registration',async (userAddress)=>{
@@ -53,65 +41,6 @@ useEffect(() => {
     console.log("verification success");
   })
 }, []);
-
-
-
-
-  const handleSubmit=(e)=>{
-    const {landId,area,city,pradesh,propertyId,document}= formData;
-    e.preventDefault();
-    // console.log(formData);
-    addLandTo();
-    
-  }
-
-  const handleUserInfo=(e)=>{
-    e.preventDefault();
-    getUserInfo();
-  }
-
-  const handleUserRegister=(e)=>{
-    e.preventDefault();
-    checkUserVerification();
-  }
-
-  const handleUserCheck=(e)=>{
-    e.preventDefault();
-    checkUser();
-  }
-
-  const handleUserVerification=(e)=>{
-    e.preventDefault();
-    verifyTheUser();
-  }
-
-  const handleLandSubmit=(e)=>{
-    e.preventDefault();
-    console.log("handle land submit called");
-    getAllLands();
-  }
-
-  const handleLandCheck=(e)=>{
-    e.preventDefault();
-    checkLand();
-  }
-  const handleLandVerification=(e)=>{
-    e.preventDefault();
-    verifyUserLand();
-  }
-
-  const handlePayment=(e)=>{
-    e.preventDefault();
-    checkPayment();
-  }
-
-const handleUserSubmit=(e)=>{
-  setButtonClicked(true);
-  const {name,age,city,citizenShipNumber,email,document}= userData;
-  e.preventDefault();
-  console.log(userData);
-  addUserTo();
-}
 
   return (
     <>
