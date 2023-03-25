@@ -5,7 +5,7 @@ import React, {useContext} from "react";
 
 
 export default function ViewUser(){
-   const {userDetails,getUserInfo,userData}=  useContext(LandRegistrationContext);
+   const {getUserInfo,userData}=  useContext(LandRegistrationContext);
    
    const handleUserInfo=(e)=>{
     e.preventDefault();

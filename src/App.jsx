@@ -12,6 +12,8 @@ import AdminLand from './pages/AdminLand';
 import AllLands from './pages/AllLands';
 import Requests from './pages/Requests';
 import AdminTransferLand from './pages/AdminiTransferLand';
+import AdminLogin from './pages/AdminLogin';
+import ImageInstalling from './pages/ImageInstalling';
 
 
 
@@ -26,9 +28,9 @@ function App() {
 
   const { ethereum } = window;
 
-const provider = new ethers.providers.Web3Provider(ethereum);
-const signer = provider.getSigner();
-const landRegistrationContract = new ethers.Contract(contractAddress, contractABI, signer);
+  const provider = new ethers.providers.Web3Provider(ethereum);
+  const signer = provider.getSigner();  
+  const landRegistrationContract = new ethers.Contract(contractAddress, contractABI, signer);
 
 
    const {connectWallet, currentAccount, checkAdmin,addUserTo,formData,userData,handleChange,handleUserChange,getUserInfo,checkUserVerification,checkUser,verifyTheUser,handleVerify,addLandTo,getAllLands,verifyUserLand,checkLand,viewUserInfo,checkPayment}=  useContext(LandRegistrationContext);
@@ -111,148 +113,12 @@ const handleUserSubmit=(e)=>{
   addUserTo();
 }
 
-  //  const handleSubmit=(e)=>{
-
-  //   const {landId,area,city,pradesh,propertyId,document}=formData;
-
-  //   e.preventDefault();
-
-  //   // console.log(landId);
-  //   // if(!landId || !amount || !address) return;
-
-  //   console.log("value present")
-  //   console.log(formData)
-
-  //   sendTransaction();
-  // }
-
-  // const handleGetLand = async (event) => {
-  //   event.preventDefault();
-  //   getAllLand();
-  // };
-
   return (
-    // <div className='App'>
-    //   <div className="app-header">
-    //     <h1>React Dapp authentication with React Web3.js and metamask</h1>
-    //   </div>
-      
-    //   <div className="app-wrapper">
-    //     {/* {!currentAccount && (
-    //         <button className="app-button_login" onClick={connectWallet}>
-    //           Login
-    //         </button>
-    //     ) } */}
-    //     {!currentAccount && (
-    //         <button className="app-button_login" onClick={connectWallet}>
-    //           Login
-    //         </button>
-    //     )}
-    //   </div>
-
-    //     {/* <div>
-    //     LandId:<input type="number" name="landId" value={formData.landId} onChange={handleChange} />
-    //     Area<input type="number" name="area" value={formData.area} onChange={handleChange} />
-    //     City<input type="text" name="city" value={formData.city} onChange={handleChange} />
-    //     Pradesh<input type="text" name="pradesh" value={formData.pradesh} onChange={handleChange} />
-    //     PropertyId<input type="number" name="propertyId" value={formData.propertyId} onChange={handleChange} />
-    //     Document<input type="text" name="document" value={formData.document} onChange={handleChange} />
-        
-       
-
-    //     <button type='button' onClick={handleSubmit}>submit</button>
-    //   </div> */}
-
-    //   <div>
-    //     <button className='check-if-admin' onClick={checkAdmin}>Check if admin or not</button>
-    //   </div>
-
-
-    //      <div>
-    //     {/* LandId:<input type="number" name="landId" value={formData.landId} onChange={handleChange} />
-    //     Area<input type="number" name="area" value={formData.area} onChange={handleChange} />
-    //     City<input type="text" name="city" value={formData.city} onChange={handleChange} />
-    //     Pradesh<input type="text" name="pradesh" value={formData.pradesh} onChange={handleChange} />
-    //     PropertyId<input type="number" name="propertyId" value={formData.propertyId} onChange={handleChange} />
-    //     Document<input type="text" name="document" value={formData.document} onChange={handleChange} /> */}
-
-    //     {/* LandId:<input type="number" name="landId" onChange={handleChange} /> */}
-    //     Area<input type="number" name="area"  onChange={handleChange} />
-    //     City<input type="text" name="city"  onChange={handleChange} />
-    //     Pradesh<input type="text" name="pradesh" onChange={handleChange} />
-    //     PropertyId<input type="number" name="propertyId" onChange={handleChange} />
-    //     Document<input type="text" name="document"  onChange={handleChange} />
-        
-       
-
-    //     <button type='button' onClick={handleSubmit}>submit</button>
-    //   </div>
-
-    //   <div>
-    //     Name: <input type="text" name="name" onChange={handleUserChange} />
-    //     age: <input type="number" name="age" onChange={handleUserChange} />
-    //     city: <input type="text" name="city" onChange={handleUserChange} />
-    //     citizenShipNumber: <input type="text" name="citizenShipNumber" onChange={handleUserChange} />
-    //     email: <input type="text" name="email" onChange={handleUserChange} />
-    //     document: <input type="text" name="document" onChange={handleUserChange} />
-    //     <button type='button' onClick={handleUserSubmit}>add user</button>
-    //   </div>
-
-    //   {/* <div>
-    //     <h1>View user request in console</h1>
-    //     {
-    //       buttonClicked ? viewUserInfo() : <h1>The data cannot be recieved yet</h1>
-       
-    //     }
-    //   </div> */}
-
-    //   <div>
-    //     <button type='button' onClick={handleUserInfo}> Retirieve user info</button>
-    //   </div>
-
-    //   <div>
-    //     <button type='button' onClick={handleUserCheck}>Check if the current account is user</button>
-    //   </div>
-
-    //   <div>
-    //     <button type='button' onClick={handleUserRegister}>check if user registered</button>
-    //   </div>
-
-    //   <div>
-    //     {/* <input type="text" name='userAddress' onChange={handleVerify} /> */}
-    //     <button type='button' onClick={handleUserVerification}>User verify by admin</button>
-    //   </div>
-
-    //   <div>
-    //     <button type='button' onClick={handleLandSubmit}>Get All lands of current user</button>
-    //   </div>
-
-    //   <div>
-    //     <button type='button' onClick={handleLandVerification}>Perform land verification by admin</button>
-    //   </div>
-
-    //   <div>
-    //     <button type='button' onClick={handleLandCheck}>Check if land verified or note</button>
-    //   </div>
-
-    //   <div>
-    //     <button type='button' onClick={handlePayment}>Check if amount transfer possible or not</button>
-    //   </div>
-
-
-    
-
-
-    // </div>
-
     <>
     <ul>
-
- 
-    <li>
-      <Link to="/user">User</Link>
-    </li>
-    <li>  <Link to="/admin">Admin</Link></li>
+    <li><Link to="/user">User</Link></li>
+    <li><Link to="/adminLogin">Admin Login</Link></li>
+    <li><Link to="/admin">Admin</Link></li>
     <li><Link to='/form'>Form Page</Link></li>
     <li><Link to='/viewUser'>View User Information</Link></li>
     <li><Link to='/addLand'>Add Land</Link></li>
@@ -261,11 +127,13 @@ const handleUserSubmit=(e)=>{
     <li><Link to='/allLands'>View All available Lands</Link></li>
     <li><Link to='/viewRequests'>View All available Requests of your land</Link></li>
     <li><Link to='/landTransfer'>Transfer Land by admin</Link></li>
+    <li><Link to='/imageInstall'>To Install the image in IPFS</Link></li>
 
     </ul>
 
     <Routes>
       <Route path="/user" element={<User />}/>
+      <Route path="/adminLogin/*" element={<AdminLogin />}/>
       <Route path="/admin" element={<Admin />}/>
       <Route path="/form" element={<Form />}/>
       <Route path="/viewUser" element={<ViewUser />}/>
@@ -275,6 +143,7 @@ const handleUserSubmit=(e)=>{
       <Route path="/allLands" element={<AllLands />}/>
       <Route path="/viewRequests" element={<Requests />}/>
       <Route path="/landTransfer" element={<AdminTransferLand />}/>
+      <Route path="/imageInstall" element={<ImageInstalling />}/>
     </Routes>
     </>
     

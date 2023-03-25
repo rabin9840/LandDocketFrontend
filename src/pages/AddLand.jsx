@@ -8,7 +8,6 @@ export default function AddLand(){
     const handleSubmit=(e)=>{
         const {landId,area,city,pradesh,propertyId,document}= formData;
         e.preventDefault();
-        // console.log(formData);
         addLandTo();
         
       }

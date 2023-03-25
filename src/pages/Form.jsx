@@ -4,6 +4,7 @@ import React, {useContext} from "react";
 
 export default function Form(){
    const {addUserTo,userData,handleUserChange}=  useContext(LandRegistrationContext);
+   
     const handleUserSubmit=(e)=>{
         const {name,age,city,citizenShipNumber,email,document}= userData;
         e.preventDefault();

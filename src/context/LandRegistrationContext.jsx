@@ -22,15 +22,6 @@ const getEthereumContract = () => {
 
 export const LandRegistrationProvider=({children})=>{
     const [currentAccount,setCurrentAccount]=useState("");
-    // const [formData, setFormData]= useState({
-    //     landId:0,
-    //     area:0,
-    //     city:'',
-    //     pradesh:'',
-    //     propertyId:0,
-    //     document:''
-    // });
-
     const [formData, setFormData]= useState({
       area:0,
       city:'',
@@ -48,14 +39,23 @@ export const LandRegistrationProvider=({children})=>{
       document:''
     });
 
+    const [requestInfo,setRequestInfo]=useState([]);
+
+    const [usersInfo,setUsersInfo]=useState([]);
+
+    const [isAdmin,setIsAdmin]=useState(false);
+
     const [userTransaction, setUserTransaction]=useState([]);
 
     const [userDetails,setUserDetails]=useState(null);
 
      const [userAddress,setUserAddress]= useState(null);
 
+     const [landsInfo,setLandsInfo]=useState([]);
+
     const [landDetails,setLandDetails]=useState(null);
     const [isLoadin,setisLoading]=useState(false);
+    const [isLandTransfer,setIsLandTransfered]=useState(false);
 
     const handleChange = (e) => {
       console.log("handle change called");
@@ -85,57 +85,7 @@ export const LandRegistrationProvider=({children})=>{
 }
 
 
-    // const getAllLand= async ()=>{
-    //   try {
-    //     if (!ethereum) return alert("Please install Metamask to continue");
-    //     const landRegistrationContract= getEthereumContract();
-    //     console.log("getlands called");
-    //     //const landDetails = await landRegistrationContract.getLandDetails(formData.landId);
-    //     const landDetails = await landRegistrationContract.getUserLandDetail();
-    //     console.log("getuserlAND DETAILS");
-    //     console.log(landDetails);
-
-    //     const landId = landDetails[0];
-    //     const area = landDetails[1];
-    //     const city = landDetails[2];
-    //     const pradesh = landDetails[3];
-    //     const propertyId = landDetails[4];
-    //     const document= landDetails[5];
-    
-    //       setLandDetails(
-    //         "LandId: " + landId + "\n" +
-    //         "Area: " + area + "\n" +
-    //         "City: " + city + "\n" +
-    //         "Pradesh: " + pradesh+'\n'+
-    //         "Property Id: " + propertyId + "\n" +
-    //         "Document: " + document 
-    
-    //       )
-    //     console.log("data retreived")
-    //     console.log(availableLands)
-        
-
-    //     // const structuredLandsDetails= availableLands.map((transactions)=>({
-    //     //   landId:transactions.landId,
-    //     //   area:transactions.area,
-    //     //   city:transactions.city,
-    //     //   pradesh:transactions.pradesh,
-    //     //   propertyId:transactions.propertyId,
-    //     //   document:transactions.document,
-    //     // }))
-    //     // console.log(structuredLandsDetails);
-
-
-        
-    //   } catch (error) {
-        
-    //   }
-    // }
-
-      
-    
-
-      const checkIfWalletIsConnected = async () => {
+  const checkIfWalletIsConnected = async () => {
         try {
           if (!ethereum) return alert("Please install Metamask to continue");
           const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -155,16 +105,6 @@ export const LandRegistrationProvider=({children})=>{
           console.log(error);
         }
       };
-      
-      // const checkIfTransactionExist= async ()=>{
-      //   try {
-      //     const transactionHash=await landRegistrationContract.addLand(landId,area,city,pradesh,propertyId,document);
-
-          
-      //   } catch (error) {
-          
-      //   }
-      // }
 
       const connectWallet = async () => {
         try {
@@ -174,6 +114,15 @@ export const LandRegistrationProvider=({children})=>{
           }); //get all accounts
           console.log(accounts);
           setCurrentAccount(accounts[0]); //set the 1st account as default account
+
+          const checkIfAdmin = await landRegistrationContract.isLandInspector(accounts[0]);
+          // const checkIfAdmin = await testContract.isLandInspector(currentAccount);
+
+          const isAdmin=checkAdmin(checkIfAdmin);
+          console.log(isAdmin)
+          if(isAdmin){
+            setIsAdmin(isAdmin);
+          }
         } catch (error) {
           console.log(error);
         }
@@ -200,6 +149,9 @@ export const LandRegistrationProvider=({children})=>{
           // await transactionHash.wait();
           // setisLoading(false);
           // console.log(`Success: ${transactionHash.hash}`)
+          if(checkAdmin){
+            setIsAdmin(true);
+          }
 
           
         } catch (error) {
@@ -227,55 +179,6 @@ export const LandRegistrationProvider=({children})=>{
       }
 
       //function to retrieve current user details
-      // const getUserInfo=async()=>{
-      //   try {
-      //     if (!ethereum) return alert("Please install Metamask to continue");
-      //     console.log("getUserInfo called");
-      //     const testContract= getEthereumContract();
-      //     console.log("contract retrieved");
-      //     console.log(currentAccount);
-      //     const userDetails= await testContract.getCurrentUserDetails();
-      //     console.log("userDetails retrieved");
-      //     console.log(userDetails);
-          
-      //   } catch (error) {
-      //     console.log(error);
-          
-      //   }
-      // }
-      // const getUserInfo=async()=>{
-      //   try {
-      //     if (!ethereum) return alert("Please install Metamask to continue");
-      //     console.log("getUserInfo called");
-      //     const testContract= getEthereumContract();
-      //     console.log("contract retrieved");
-      //     console.log(currentAccount);
-      //     const userDetails= await testContract.getCurrentUserDetails();
-      //     console.log("userDetails retrieved");
-      //     console.log(userDetails);
-      //     console.log(userDetails[0]);
-      //     console.log(userDetails[1]);
-      //     console.log(userDetails[2]);
-      //     console.log(userDetails[3]);
-      //     console.log(userDetails[4]);
-      //     setUserDetails(
-      //       "Name: " + userDetails[0] + "\n" +
-      //       "Age: " + userDetails[1] + "\n" +
-      //       "City: " + userDetails[2] + "\n" +
-      //       "Citizenship: " + userDetails[3]+'\n'+
-      //       "email: " + userDetails[4] + "\n" 
-            
-    
-      //     )
-      //     console.log("User details:"+userDetails);
-
-          
-      //   } catch (error) {
-      //     console.log(error);
-          
-      //   }
-      // }
-
       const getUserInfo=async()=>{
         try {
           if (!ethereum) return alert("Please install Metamask to continue");
@@ -286,23 +189,6 @@ export const LandRegistrationProvider=({children})=>{
           const userDetails= await testContract.getCurrentUserDetails();
           console.log("userDetails retrieved");
           console.log(userData);
-          // console.log("user data"+userData.name+"called");
-          // console.log(typeof(userDetails));
-          // console.log(userDetails);
-          // console.log(userDetails[0]);
-          // console.log(typeof(userDetails[0]));
-          // console.log(userDetails[1]);
-          // console.log(userDetails[2]);
-          // console.log(userDetails[3]);
-          // console.log(userDetails[4]);
-          // setUserData({
-          //   name:userDetails[0],
-          //   age:userDetails[1],
-          //   city:userDetails[2],
-          //   citizenShipNumber:userDetails[3],
-          //   email:userDetails[4],
-          //   document:userDetails[5]
-          // });
           setUserData(() => ({
             name: userDetails[0],
             age:userDetails[1],
@@ -322,6 +208,37 @@ export const LandRegistrationProvider=({children})=>{
         }
       }
 
+      // function to get userinformation by admin
+      async function getUserData(){
+        if (!ethereum) return alert("Please install Metamask to continue");
+          console.log("getUserData called");
+          const testContract= getEthereumContract();
+          console.log("contract retrieved");
+          const addressList= await testContract.getUser();
+
+          addressList.forEach(async address=>{
+           console.log("Insisde loop");
+           const users= await testContract.getUserDetails(address);
+           // check if user verified or not
+           const isUserVerified= await testContract.isVerified(address);
+           const structUserInfo= {
+               name:users[0],
+               age:users[1],
+               city:users[2],
+               citizenShipNumber:users[3],
+               email:users[4],
+               userAccount:address,
+               isVerified:isUserVerified
+           }
+            setUsersInfo((prev)=>[...prev, structUserInfo])
+           
+       })
+
+       console.log(usersInfo);
+
+   }
+
+
       //function to check if user is verified or not
       const checkUserVerification = async()=>{
         try {
@@ -333,6 +250,18 @@ export const LandRegistrationProvider=({children})=>{
           console.log("verfication check done");
           console.log(isVerified);
           
+        } catch (error) {
+          console.log(error);
+          
+        }
+      }
+
+      const checkUserVerified= async(userAddress)=>{
+        try {
+        
+            const isUserVerified= await landRegistrationContract.isVerified(userAddress);
+         console.log(isUserVerified);
+        //  isVerified=true;
         } catch (error) {
           console.log(error);
           
@@ -358,30 +287,6 @@ export const LandRegistrationProvider=({children})=>{
         }
       }
 
-      // function to get all user
-      // const getAllUser= async()=>{
-      //   try { if (!ethereum) return alert("Please install Metamask to continue");
-      //   console.log("Verify user function called");
-      //   const testContract= getEthereumContract();
-      //   console.log("contract retrieved");
-      //  // verify user 
-
-      //  const allUsers=await testContract.getUser();
-      //  console.log("All users retrieved");
-      // //  console.log(allUsers);
-      // //  console.log(typeof(allUsers));
-      // //  console.log(allUsers[0]);
-      // //  const userAddress=allUsers[0];
-      // console.log(allUsers[0]);
-      // // setUserAddress(userAddressallUsers[0]);
-      // userAddress=allUsers[0];
-
-      // console.log(userAddress);
-          
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // }
 
       // function to display the information of the user to verify
       // by admin
@@ -407,63 +312,28 @@ export const LandRegistrationProvider=({children})=>{
       }
 
       // function to verify user
-      const verifyTheUser= async()=>{
-        // try {
-        //   //await getAllUser();
-        //   if (!ethereum) return alert("Please install Metamask to continue");
-        //   console.log("Verify user function called");
-        //   const testContract= getEthereumContract();
-        //   console.log("contract retrieved");
-        //  // verify user 
+      // const verifyTheUser= async()=>{
 
-        //  const allUsers=await testContract.getUser();
-        //  console.log("All users retrieved");
-        //  console.log(allUsers);
-        //  console.log(typeof(allUsers));
-        //  console.log(allUsers[0]);
-        //  const userAddress=allUsers[0];
+      //   try {
+      //     if (!ethereum) return alert("Please install Metamask to continue");
+      //     landRegistrationContract.on('Registration',async (userAddress)=>{
+      //       console.log("INSIDE EVENT"+userAddress);
+      //       const isVerified= await landRegistrationContract.verifyUser(userAddress);
+      //       console.log("verification success");
+      //     })
 
-        // // const userAddress='0x70997970C51812dc3A010C7d01b50e0d17dc79C8';
-        
-        //  const isVerified= await testContract.verifyUser(userAddress);
-        //  console.log("verification success");
-        // //  const isVerified= await testContract.verifyUser(allUsers[0]);
-        // //  console.log("verification success");
-
-        // console.log(currentAccount);
-        // console.log(userAddress);
-
-
-        // // console.log('Type of admin address'+typeof(currentAccount));
-        // // console.log('type of above user adress'+typeof(userAddress));
-        // // await testContract.verifyUser(userAddress);
-        // // console.log("Verification completed");
-
-
+      //     console.log(userAddress);
           
-        // } catch (error) {
-        //   console.log(error);
+      //   } catch (error) {
+      //     console.log(error);
           
-        // }
-
+      //   }
+      // }
+      const verifyTheUser= async(userAddress)=>{
         try {
-          if (!ethereum) return alert("Please install Metamask to continue");
-          // console.log("Verify user function called");
-          // const testContract= getEthereumContract();
-          // console.log("contract retrieved");
-          // // use the event fired during addUser in the beginning
-          // testContract.on('Registration',(userAddress,event=>{
-          //   console.log(userAddress);
-          // }))
-          // console.log("Newly added user: "+ userAddress);
-          landRegistrationContract.on('Registration',async (userAddress)=>{
-            console.log("INSIDE EVENT"+userAddress);
-            const isVerified= await landRegistrationContract.verifyUser(userAddress);
-            console.log("verification success");
-          })
-
-          console.log(userAddress);
-          
+        
+         const isVerified= await landRegistrationContract.verifyUser(userAddress);
+         console.log("verification success");
         } catch (error) {
           console.log(error);
           
@@ -492,28 +362,177 @@ export const LandRegistrationProvider=({children})=>{
       }
 
       // function to get land details
-      const getAllLands= async()=>{
-        try {
-          if (!ethereum) return alert("Please install Metamask to continue");
-          console.log("getland info called");
-          const testContract= getEthereumContract();
-          console.log("contract retrieved");
-          const landDetails= await testContract.getLands();
-          console.log("landDetails retrieved");
-          console.log(landDetails);
-          // console.log("first land");
-          // console.log("first land id:"+landDetails[0].landId);
-          // console.log("first land city:"+landDetails[0].city);
-          // console.log(landDetails[1]);
-          // console.log("seconde land id:"+landDetails[1].landId);
-          // console.log(landDetails[2]);
-          // console.log("third land id:"+landDetails[2].landId);
+      // const getAllLands= async()=>{
+      //   try {
+      //     if (!ethereum) return alert("Please install Metamask to continue");
+      //     console.log("getland info called");
+      //     const testContract= getEthereumContract();
+      //     console.log("contract retrieved");
+      //     const landDetails= await testContract.getLands();
+      //     console.log("landDetails retrieved");
+      //     console.log(landDetails);
+      //     // console.log("first land");
+      //     // console.log("first land id:"+landDetails[0].landId);
+      //     // console.log("first land city:"+landDetails[0].city);
+      //     // console.log(landDetails[1]);
+      //     // console.log("seconde land id:"+landDetails[1].landId);
+      //     // console.log(landDetails[2]);
+      //     // console.log("third land id:"+landDetails[2].landId);
           
+      //   } catch (error) {
+      //     console.log(error);
+          
+      //   }
+      // }
+
+      // IMPORTANT NOTE
+      //used in OwnedLands function 
+      async function getAllLand(){
+        if (!ethereum) return alert("Please install Metamask to continue");
+        console.log("getUserData called");
+        const testContract= getEthereumContract();
+        console.log("contract retrieved");
+    
+          // to get the available number of lands
+          const landCount= await testContract.getLandsCount();
+          const TotalLandCount=parseInt(landCount);
+    
+          console.log(TotalLandCount);
+    
+          for(let i=1;i<TotalLandCount+1;i++){
+            // check if the current user is the owner of the land
+            console.log("inside loop");
+            const landOwner= await testContract.getLandOwner(i);
+            const actualLandOwner=landOwner.toLowerCase();
+            if(currentAccount==actualLandOwner){
+                // get the land details of the given land
+                console.log('inside if condition')
+                const landDetails= await testContract.getLandDetails(i);
+                console.log('landDetails'+landDetails);
+                console.log(parseInt(landDetails[0]));
+                const isLandVerified= await testContract.isLandVerified(i);
+                console.log(isLandVerified);
+                const structLandInfo= {
+                    landId:parseInt(landDetails[0]),
+                    area:parseInt(landDetails[1]),
+                    city:landDetails[2],
+                    pradesh:landDetails[3],
+                    propertyId:parseInt(landDetails[4]),
+                    document:landDetails[5],
+                    isVerified:isLandVerified.toString()
+                }
+                console.log(structLandInfo);
+                setLandsInfo((prev)=>[...prev, structLandInfo])
+    
+            }
+          }
+    
+          console.log('lands information'+landsInfo);
+      }
+
+      // IN ALLLANDS CALLED
+      async function getAllLands(){
+        if (!ethereum) return alert("Please install Metamask to continue");
+        console.log("getUserData called");
+        const testContract= getEthereumContract();
+        console.log("contract retrieved");
+
+        const landCount= await testContract.getLandsCount();
+        const TotalLandCount=parseInt(landCount);
+  
+        for(let i=1;i<TotalLandCount+1;i++){
+              console.log("inside loop");
+              const landOwner= await testContract.getLandOwner(i);
+              // get the land details of the given land
+              const landDetails= await testContract.getLandDetails(i);
+              console.log('landDetails'+landDetails);
+              console.log(parseInt(landDetails[0]));
+              const isLandVerified= await testContract.isLandVerified(i);
+              const landAccount= await testContract.getLandOwner(i);
+              console.log("land owner address"+landAccount);
+              // may be needed to change landOwner Address to lower case
+              const structLandInfo= {
+                  landId:parseInt(landDetails[0]),
+                  area:parseInt(landDetails[1]),
+                  city:landDetails[2],
+                  pradesh:landDetails[3],
+                  propertyId:parseInt(landDetails[4]),
+                  document:landDetails[5],
+                  isVerified:isLandVerified.toString(),
+                  landOwnerAddress:landAccount
+              }
+              console.log(structLandInfo);
+              setLandsInfo((prev)=>[...prev, structLandInfo])
+  
+          }
+  
+          console.log(landsInfo);
+  
+      }
+
+      // for verification of the land by the admin
+
+      async function getUserAllData(){
+        if (!ethereum) return alert("Please install Metamask to continue");
+        console.log("getUserData called");
+        const testContract= getEthereumContract();
+        console.log("contract retrieved");
+
+        const landCount= await testContract.getLandsCount();
+        const TotalLandCount=parseInt(landCount);
+  
+        for(let i=1;i<TotalLandCount+1;i++){
+              console.log("inside loop");
+              const landOwner= await testContract.getLandOwner(i);
+              // get the land details of the given land
+              const landDetails= await testContract.getLandDetails(i);
+              console.log('landDetails'+landDetails);
+              console.log(parseInt(landDetails[0]));
+              const isLandVerified= await testContract.isLandVerified(i);
+              const structLandInfo= {
+                  landId:parseInt(landDetails[0]),
+                  area:parseInt(landDetails[1]),
+                  city:landDetails[2],
+                  pradesh:landDetails[3],
+                  propertyId:parseInt(landDetails[4]),
+                  document:landDetails[5],
+                  isVerified:isLandVerified
+              }
+              console.log(structLandInfo);
+              setLandsInfo((prev)=>[...prev, structLandInfo])
+  
+          }
+  
+          console.log(landsInfo);
+  
+      }
+
+
+      //function to check land verified or not
+      const checkLandVerified= async(landId)=>{
+        try {
+        
+            const isLandVerified= await landRegistrationContract.isLandVerified(landId);
+         console.log(isLandVerified);
+        //  isVerified=true;
         } catch (error) {
           console.log(error);
           
         }
       }
+
+      //function to verify the land
+      const verifyTheLand= async(landId)=>{
+        try {
+        
+         const isVerified= await landRegistrationContract.verifyLand(landId);
+         console.log("verification success");
+        } catch (error) {
+          console.log(error);
+          
+        }
+      }
+    
 
       const checkLand= async()=>{
         try {
@@ -589,6 +608,103 @@ export const LandRegistrationProvider=({children})=>{
         }
 
       }
+
+      //function to request the land
+      const requestThisLand= async(landId,landOwnerAddress)=>{
+        try {
+          // IF ABOVE LANDREGISTRATION CONTRACT IS REMOVED THEN IN BELOW getEthereum contract need to be called
+           const requesttheLand=await landRegistrationContract.requestLand(landOwnerAddress,landId);
+            console.log("land Requested");
+           } catch (error) {
+             console.log(error);
+             
+           }
+    }
+
+    //FUNCTION TO GET ALL REQUEST
+    async function getAllRequests(){
+      // ALSO CAN USE GETETHEREUM FUNCTION
+      const requestCount= await landRegistrationContract.getRequestsCount();
+      const TotalRequestCount= parseInt(requestCount);
+      console.log('inside request function'+currentAccount);
+
+      for(let i=1;i<TotalRequestCount+1;i++){
+        console.log('inside loop');
+        const requestDetails= await landRegistrationContract.requestDetails(i);
+        console.log(requestDetails);
+        // const isSellerSame= (currentAccount== requestDetails[0].toLowerCase());
+        // console.log(isSellerSame);
+        if(currentAccount== requestDetails[0].toLowerCase()){
+            const structRequestInfo={
+                requestId:i,
+                sellerAddress:requestDetails[0],
+                buyerAddress:requestDetails[1],
+                landId:requestDetails[2],
+                requestStatus:requestDetails[3]
+            }
+            console.log(structRequestInfo);
+            setRequestInfo((prev)=>[...prev,structRequestInfo]);
+        }
+        
+      }
+
+      console.log(requestInfo);
+
+    }
+
+    //Function to approve the request
+    const approveRequest= async(requestId)=>{
+      const isRequested= await landRegistrationContract.approveRequest(requestId);
+      console.log("land Request Approved");
+  }
+
+  // function to get approved request
+  const getApprovedRequests=async()=>{
+    const requestCount= await landRegistrationContract.getRequestsCount();
+    const TotalRequestCount= parseInt(requestCount);
+    console.log('inside request function'+currentAccount);
+
+    for(let i=1;i<TotalRequestCount+1;i++){
+      console.log('inside loop');
+      const isRequestApproved= await landRegistrationContract.isApproved(i);
+      if(isRequestApproved){
+          const requestDetails= await landRegistrationContract.requestDetails(i);
+          // console.log(typeof(isLandTransfer));
+          // console.log("in request getting"+isLandTransfer);
+          // const isLandTransfered= isLandTransfer;
+          // console.log('islandtransfered'+isLandTransfered);
+          
+          console.log(typeof(requestDetails[4]));
+          console.log(requestDetails[4]);
+         
+              const structRequestInfo={
+                  requestId:i,
+                  sellerAddress:requestDetails[0],
+                  buyerAddress:requestDetails[1],
+                  landId:requestDetails[2],
+                  requestStatus:requestDetails[3],
+                  isTransfered:requestDetails[4]
+              }
+              console.log(structRequestInfo);
+              setRequestInfo((prev)=>[...prev,structRequestInfo]);
+      }
+
+      
+    }
+
+    console.log(requestInfo);
+
+  }
+
+  const transferLand= async(landId,buyerAddress,requestId)=>{
+    // after transfer of land remove the request
+    // when the landid of the request is equal to above landind
+    const jobTransferLand= await landRegistrationContract.LandOwnershipTransfer(landId,buyerAddress);
+    // to set transfer of given request to true
+    const transferSuccessful= await landRegistrationContract.checkTransfer(requestId);
+    console.log("land Transfer successful");
+
+}
 
       // function to check if ether can be sent or not from one account to another
       const checkPayment= async()=>{
@@ -668,7 +784,7 @@ export const LandRegistrationProvider=({children})=>{
 
     return(
       // <LandRegistrationContext.Provider value={{connectWallet,currentAccount,formData,setFormData,handleChange,sendTransaction,getAllLand}}>
-      <LandRegistrationContext.Provider value={{connectWallet,currentAccount,checkAdmin,addUserTo,formData,userData,setFormData,setUserData,handleChange,handleUserChange, getUserInfo,checkUserVerification,checkUser,verifyTheUser,handleVerify,addLandTo,getAllLands,verifyUserLand,checkLand,viewUserInfo,checkPayment,userDetails,setUserDetails}}>
+      <LandRegistrationContext.Provider value={{connectWallet,currentAccount,checkAdmin,isAdmin,addUserTo,formData,userData,setFormData,setUserData,handleChange,handleUserChange, getUserInfo,getUserData,usersInfo,checkUserVerification,checkUserVerified,checkUser,verifyTheUser,handleVerify,addLandTo,getAllLands,getUserAllData,landsInfo,verifyUserLand,checkLand,viewUserInfo,checkPayment,userDetails,setUserDetails,checkLandVerified,verifyTheLand,requestThisLand,getAllLand,approveRequest,requestInfo,getAllRequests,transferLand,getApprovedRequests,isLandTransfer}}>
             {children}
         </LandRegistrationContext.Provider>
     )
